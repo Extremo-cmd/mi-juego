@@ -5,10 +5,7 @@ body {
 }
 
 canvas {
-    border: 4px solid #00ffcc;
-    margin-top: 20px;
-    box-shadow: 0 0 25px #00ffcc;
-    border-radius: 10px;
+    cursor: url("../img/cursor.png") 16 16, crosshair;
 }
 
 /* HUD */
