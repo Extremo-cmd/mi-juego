@@ -9,8 +9,8 @@ let nivel = 1;
 let vidas = 5;
 let jugando = false;
 
-let highScore = localStorage.getItem("highScore") || 0;
-document.getElementById("highScore").textContent = highScore;
+let centroX = canvas.width / 2;
+let centroY = canvas.height / 2;
 
 // IMÁGENES
 const fondo = new Image();
@@ -52,15 +52,26 @@ function toggleMusica() {
     musica.paused ? musica.play() : musica.pause();
 }
 
-// CREAR ZOMBIE
+// 🧟 CREAR ZOMBIE DESDE BORDES
 function crearZombie() {
+    let lado = Math.floor(Math.random() * 4);
+    let x, y;
+
+    if (lado === 0) { x = 0; y = Math.random() * canvas.height; }
+    if (lado === 1) { x = canvas.width; y = Math.random() * canvas.height; }
+    if (lado === 2) { x = Math.random() * canvas.width; y = 0; }
+    if (lado === 3) { x = Math.random() * canvas.width; y = canvas.height; }
+
+    let dx = centroX - x;
+    let dy = centroY - y;
+    let dist = Math.sqrt(dx * dx + dy * dy);
+
     zombies.push({
-        x: Math.random() * 850,
-        y: Math.random() * 450,
+        x: x,
+        y: y,
         size: 60,
-        dx: (Math.random() - 0.5) * (1 + nivel * 0.5),
-        dy: (Math.random() - 0.5) * (1 + nivel * 0.5),
-        vida: 120
+        dx: (dx / dist) * (1 + nivel * 0.3),
+        dy: (dy / dist) * (1 + nivel * 0.3)
     });
 
     reproducir(zombieSound);
@@ -71,7 +82,6 @@ function update() {
 
     ctx.drawImage(fondo, 0, 0, canvas.width, canvas.height);
 
-    // EFECTO OSCURO
     ctx.fillStyle = "rgba(0,0,0,0.3)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -80,29 +90,42 @@ function update() {
         return;
     }
 
+    // DIBUJAR JUGADOR (centro)
+    ctx.fillStyle = "red";
+    ctx.beginPath();
+    ctx.arc(centroX, centroY, 10, 0, Math.PI * 2);
+    ctx.fill();
+
     zombies.forEach((z, i) => {
         z.x += z.dx;
         z.y += z.dy;
-        z.vida--;
 
         ctx.drawImage(zombieImg, z.x, z.y, z.size, z.size);
 
-        if (z.vida <= 0) {
+        // SI LLEGA AL CENTRO
+        let dx = z.x - centroX;
+        let dy = z.y - centroY;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 20) {
             zombies.splice(i, 1);
             vidas--;
         }
     });
 
+    // EXPLOSIONES
     explosiones.forEach((ex, i) => {
         ctx.drawImage(explosionImg, ex.x, ex.y, ex.size, ex.size);
         ex.tiempo--;
         if (ex.tiempo <= 0) explosiones.splice(i, 1);
     });
 
+    // UI
     document.getElementById("score").textContent = score;
     document.getElementById("nivel").textContent = nivel;
     document.getElementById("vidas").textContent = vidas;
 
+    // GAME OVER
     if (vidas <= 0) {
         musica.pause();
         reproducir(gameOverSound);
@@ -124,16 +147,8 @@ canvas.addEventListener("click", (e) => {
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
 
-    // FLASH
     ctx.fillStyle = "rgba(255,255,255,0.2)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // MIRA
-    ctx.beginPath();
-    ctx.arc(mx, my, 20, 0, Math.PI * 2);
-    ctx.strokeStyle = "yellow";
-    ctx.lineWidth = 3;
-    ctx.stroke();
 
     zombies.forEach((z, i) => {
         if (
@@ -146,29 +161,23 @@ canvas.addEventListener("click", (e) => {
                 x: z.x,
                 y: z.y,
                 size: 60,
-                tiempo: 20
+                tiempo: 15
             });
 
             zombies.splice(i, 1);
             score += 10;
-
-            if (score > highScore) {
-                highScore = score;
-                localStorage.setItem("highScore", highScore);
-                document.getElementById("highScore").textContent = highScore;
-            }
         }
     });
 });
 
-// GENERACIÓN
+// SPAWN MÁS REAL
 setInterval(() => {
     if (jugando) crearZombie();
-}, 1000);
+}, 1500);
 
 // DIFICULTAD
 setInterval(() => {
     if (jugando) nivel++;
-}, 5000);
+}, 7000);
 
 update();
