@@ -39,29 +39,24 @@ La interfaz presenta un diseño moderno con Bootstrap, además de un fondo gráf
 ---
 
 ## Estructura del Proyecto
-
----
-
 mi-juego/
 │
-├── index.html # Archivo principal
-├── README.md # Documentación
+├── index.html          # Archivo principal
+├── README.md           # Documentación
 │
 └── assets/
-├── css/
-│ └── styles.css # Estilos del juego
-│
-├── js/
-│ └── script.js # Lógica del videojuego
-│
-└── img/
-├── fondo.jpg # Fondo del escenario
-├── zombie.png # Enemigo
-├── cursor.png # Cursor personalizado
-├── explosion.png # Efecto visual
-└── favicon.ico # Icono del sitio
-
----
+    ├── css/
+    │   └── styles.css      # Estilos del juego
+    │
+    ├── js/
+    │   └── script.js       # Lógica del videojuego
+    │
+    └── img/
+        ├── fondo.jpg       # Fondo del escenario
+        ├── zombie.png      # Enemigo
+        ├── cursor.png      # Cursor personalizado
+        ├── explosion.png   # Efecto visual
+        └── favicon.ico     # Icono del sitio
 
 ## Objetivo Académico
 
