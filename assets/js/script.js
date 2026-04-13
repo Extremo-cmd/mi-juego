@@ -153,7 +153,7 @@ canvas.addEventListener("click", (e) => {
             zombies.splice(i, 1);
             score += 10;
 
-            if (score > highScore) {
+             if (score > highScore) {
                 highScore = score;
                 localStorage.setItem("highScore", highScore);
                 document.getElementById("highScore").textContent = highScore;
