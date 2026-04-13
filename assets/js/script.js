@@ -43,12 +43,6 @@ function startGame(){
 
 function pausar(){
     pausado = !pausado;
-
-    if(pausado){
-        musica.pause();
-    } else {
-        musica.play().catch(()=>{});
-    }
 }
 
 // CREAR ZOMBIE
@@ -61,16 +55,11 @@ function crearZombie(){
     if(lado===2){x=Math.random()*canvas.width;y=0;}
     if(lado===3){x=Math.random()*canvas.width;y=canvas.height;}
 
-    zombies.push({x,y,size:60,speed:1+nivel*0.3});
-
-    zombieSound.currentTime = 0;
-    zombieSound.play().catch(()=>{});
+    zombies.push({x,y,size:60,speed:1+nivel*0.4});
 }
 
 // UPDATE
 function update(){
-
-    ctx.imageSmoothingEnabled = true;
 
     ctx.drawImage(fondo,0,0,canvas.width,canvas.height);
 
@@ -83,19 +72,27 @@ function update(){
     }
 
     if(pausado){
-        ctx.fillStyle = "rgba(0,0,0,0.7)";
+        ctx.fillStyle="rgba(0,0,0,0.7)";
         ctx.fillRect(0,0,canvas.width,canvas.height);
 
-        ctx.fillStyle = "#00ffcc";
-        ctx.font = "50px Orbitron";
-        ctx.fillText("⏸ PAUSA", canvas.width/2 - 130, canvas.height/2);
-
-        ctx.font = "20px Orbitron";
-        ctx.fillText("Presiona el botón para continuar", canvas.width/2 - 180, canvas.height/2 + 40);
+        ctx.fillStyle="#00ffcc";
+        ctx.font="50px Orbitron";
+        ctx.fillText("⏸ PAUSA", centroX-130, centroY);
 
         requestAnimationFrame(update);
         return;
     }
+
+    // 🔵 CENTRO (OBJETIVO)
+    ctx.beginPath();
+    ctx.arc(centroX, centroY, 25, 0, Math.PI*2);
+    ctx.fillStyle = "cyan";
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(centroX, centroY, 40, 0, Math.PI*2);
+    ctx.strokeStyle = "#00ffcc";
+    ctx.stroke();
 
     // ZOMBIES
     zombies.forEach((z,i)=>{
@@ -108,21 +105,23 @@ function update(){
 
         ctx.drawImage(zombieImg,z.x,z.y,z.size,z.size);
 
-        if(dist<20){
+        if(dist<30){
             zombies.splice(i,1);
             vida -= 10;
 
             ctx.fillStyle="rgba(255,0,0,0.3)";
             ctx.fillRect(0,0,canvas.width,canvas.height);
 
-            zombieSound.currentTime = 0;
             zombieSound.play().catch(()=>{});
         }
     });
 
     // EXPLOSIONES
     explosiones.forEach((ex,i)=>{
+        ctx.globalAlpha = ex.tiempo / 20;
         ctx.drawImage(explosionImg, ex.x, ex.y, ex.size, ex.size);
+        ctx.globalAlpha = 1;
+
         ex.tiempo--;
         if(ex.tiempo<=0) explosiones.splice(i,1);
     });
@@ -143,9 +142,12 @@ function update(){
     document.getElementById("nivel").textContent = nivel;
     document.getElementById("vida").textContent = vida;
 
+    // GAME OVER
     if(vida <= 0){
-        alert("💀 GAME OVER");
-        location.reload();
+        document.getElementById("finalScore").textContent = score;
+        document.getElementById("gameOver").style.display = "flex";
+        jugando = false;
+        return;
     }
 
     requestAnimationFrame(update);
@@ -162,17 +164,13 @@ canvas.addEventListener("click",(e)=>{
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
 
-    // FLASH
-    ctx.fillStyle = "rgba(255,255,255,0.2)";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-
     zombies.forEach((z,i)=>{
         if(mx>z.x && mx<z.x+z.size && my>z.y && my<z.y+z.size){
 
             explosiones.push({
                 x:z.x,
                 y:z.y,
-                size:60,
+                size:70,
                 tiempo:20
             });
 
@@ -192,11 +190,11 @@ canvas.addEventListener("mousemove",(e)=>{
 // SPAWN
 setInterval(()=>{
     if(jugando && !pausado) crearZombie();
-},1200);
+},1000);
 
 // NIVEL
 setInterval(()=>{
     if(jugando && !pausado) nivel++;
-},6000);
+},5000);
 
 update();

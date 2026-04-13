@@ -16,8 +16,15 @@
 <!-- MENU -->
 <div id="menu" class="menu">
     <h1>🧟 Zombie Shooter</h1>
-    <p>Elimina zombies antes de que lleguen al centro</p>
+    <p>Elimina zombies antes de que lleguen al núcleo</p>
     <button class="btn btn-success" onclick="startGame()">▶ JUGAR</button>
+</div>
+
+<!-- GAME OVER -->
+<div id="gameOver" class="menu" style="display:none;">
+    <h1>💀 GAME OVER</h1>
+    <p>Puntuación final: <span id="finalScore"></span></p>
+    <button class="btn btn-danger" onclick="location.reload()">Reintentar</button>
 </div>
 
 <nav class="navbar navbar-dark bg-dark">
@@ -31,14 +38,14 @@
 
     <h2>Zombie Shooter</h2>
 
-    <!-- HUD -->
     <div class="d-flex justify-content-center gap-4 flex-wrap mt-4">
         <h5>🎯 Score: <span id="score">0</span></h5>
         <h5>⚡ Nivel: <span id="nivel">1</span></h5>
         <h5>❤️ Vida: <span id="vida">100</span></h5>
     </div>
 
-    <canvas id="canvas" width="900" height="500"></canvas>
+    <!-- CANVAS MÁS GRANDE -->
+    <canvas id="canvas" width="1100" height="600"></canvas>
 
 </div>
 
