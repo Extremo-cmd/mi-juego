@@ -11,6 +11,7 @@ let jugando = false;
 
 let mouseX = 0;
 let mouseY = 0;
+let shake = 0;
 
 const centroX = canvas.width / 2;
 const centroY = canvas.height / 2;
@@ -25,13 +26,15 @@ zombieImg.src = "assets/img/zombie.png";
 const explosionImg = new Image();
 explosionImg.src = "assets/img/explosion.png";
 
+const armaImg = new Image();
+armaImg.src = "assets/img/arma.png";
+
 // SONIDOS
 const disparo = new Audio("assets/audio/disparo.mp3");
 const hit = new Audio("assets/audio/zombie.mp3");
 const gameOverSound = new Audio("assets/audio/gameover.mp3");
-
-// MUSICA
 const musica = new Audio("assets/audio/musica.mp3");
+
 musica.loop = true;
 musica.volume = 0.2;
 
@@ -41,56 +44,45 @@ function reproducir(audio){
     audio.play().catch(()=>{});
 }
 
-function iniciarJuego(){
+function startGame(){
+    document.getElementById("menu").style.display = "none";
     jugando = true;
     musica.play().catch(()=>{});
 }
 
-function pausar(){
-    jugando = !jugando;
-    jugando ? musica.play() : musica.pause();
-}
-
-// CREAR ZOMBIE INTELIGENTE
+// CREAR ZOMBIE
 function crearZombie(){
     let lado = Math.floor(Math.random()*4);
-    let x, y;
+    let x,y;
 
-    if(lado===0){ x=0; y=Math.random()*canvas.height; }
-    if(lado===1){ x=canvas.width; y=Math.random()*canvas.height; }
-    if(lado===2){ x=Math.random()*canvas.width; y=0; }
-    if(lado===3){ x=Math.random()*canvas.width; y=canvas.height; }
+    if(lado===0){x=0;y=Math.random()*canvas.height;}
+    if(lado===1){x=canvas.width;y=Math.random()*canvas.height;}
+    if(lado===2){x=Math.random()*canvas.width;y=0;}
+    if(lado===3){x=Math.random()*canvas.width;y=canvas.height;}
 
-    zombies.push({ x, y, size: 60, speed: 1 + nivel * 0.3 });
+    zombies.push({x,y,size:60,speed:1+nivel*0.4});
 }
 
 // UPDATE
 function update(){
+
+    let dx = (Math.random()-0.5)*shake;
+    let dy = (Math.random()-0.5)*shake;
+    ctx.setTransform(1,0,0,1,dx,dy);
 
     ctx.drawImage(fondo,0,0,canvas.width,canvas.height);
 
     ctx.fillStyle="rgba(0,0,0,0.4)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    // MENU
     if(!jugando){
-        ctx.fillStyle="white";
-        ctx.font="30px Orbitron";
-        ctx.fillText("CLICK EN INICIAR", 300,250);
         requestAnimationFrame(update);
         return;
     }
 
-    // JUGADOR
-    ctx.fillStyle="cyan";
-    ctx.beginPath();
-    ctx.arc(centroX,centroY,10,0,Math.PI*2);
-    ctx.fill();
-
-    // VIDA BAR
+    // VIDA
     ctx.fillStyle="red";
     ctx.fillRect(20,20,200,20);
-
     ctx.fillStyle="lime";
     ctx.fillRect(20,20,vida*2,20);
 
@@ -105,11 +97,10 @@ function update(){
 
         ctx.drawImage(zombieImg,z.x,z.y,z.size,z.size);
 
-        if(dist < 20){
+        if(dist<20){
             zombies.splice(i,1);
-            vida -= 10;
+            vida-=10;
 
-            // efecto daño
             ctx.fillStyle="rgba(255,0,0,0.3)";
             ctx.fillRect(0,0,canvas.width,canvas.height);
 
@@ -120,6 +111,12 @@ function update(){
     // EXPLOSIONES
     explosiones.forEach((ex,i)=>{
         ctx.drawImage(explosionImg,ex.x,ex.y,ex.size,ex.size);
+
+        ctx.fillStyle="red";
+        ctx.beginPath();
+        ctx.arc(ex.x+30,ex.y+30,10,0,Math.PI*2);
+        ctx.fill();
+
         ex.t--;
         if(ex.t<=0) explosiones.splice(i,1);
     });
@@ -128,17 +125,16 @@ function update(){
     ctx.strokeStyle="yellow";
     ctx.lineWidth=2;
     ctx.beginPath();
-    ctx.moveTo(mouseX-10,mouseY);
-    ctx.lineTo(mouseX+10,mouseY);
-    ctx.moveTo(mouseX,mouseY-10);
-    ctx.lineTo(mouseX,mouseY+10);
+    ctx.arc(mouseX,mouseY,15,0,Math.PI*2);
     ctx.stroke();
+
+    // ARMA
+    ctx.drawImage(armaImg, canvas.width-200, canvas.height-200, 200,200);
 
     // UI
     document.getElementById("score").textContent=score;
     document.getElementById("nivel").textContent=nivel;
 
-    // GAME OVER
     if(vida<=0){
         musica.pause();
         reproducir(gameOverSound);
@@ -146,15 +142,17 @@ function update(){
         location.reload();
     }
 
+    shake *= 0.9;
+
     requestAnimationFrame(update);
 }
 
-// CLICK DISPARO
+// DISPARO
 canvas.addEventListener("click",(e)=>{
-
     if(!jugando) return;
 
     reproducir(disparo);
+    shake = 10;
 
     const rect = canvas.getBoundingClientRect();
     const mx = e.clientX - rect.left;
@@ -162,16 +160,14 @@ canvas.addEventListener("click",(e)=>{
 
     zombies.forEach((z,i)=>{
         if(mx>z.x && mx<z.x+z.size && my>z.y && my<z.y+z.size){
-
-            explosiones.push({ x:z.x,y:z.y,size:60,t:15 });
-
+            explosiones.push({x:z.x,y:z.y,size:60,t:15});
             zombies.splice(i,1);
             score+=10;
         }
     });
 });
 
-// MOUSE MOVE
+// MOUSE
 canvas.addEventListener("mousemove",(e)=>{
     const rect = canvas.getBoundingClientRect();
     mouseX = e.clientX - rect.left;
@@ -181,11 +177,11 @@ canvas.addEventListener("mousemove",(e)=>{
 // SPAWN
 setInterval(()=>{
     if(jugando) crearZombie();
-},1200);
+},1000);
 
 // NIVEL
 setInterval(()=>{
     if(jugando) nivel++;
-},6000);
+},5000);
 
 update();

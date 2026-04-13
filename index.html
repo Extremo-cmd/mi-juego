@@ -15,6 +15,12 @@
 
 <body>
 
+<!-- MENU -->
+<div id="menu" class="menu">
+    <h1>🧟 Zombie Shooter</h1>
+    <button class="btn btn-success" onclick="startGame()">JUGAR</button>
+</div>
+
 <nav class="navbar navbar-dark bg-dark">
   <div class="container-fluid">
     <span class="navbar-brand">🧟 Zombie Shooter</span>
@@ -25,28 +31,11 @@
 
     <h2>Zombie Shooter</h2>
 
-    <p>
-    🎯 Dispara a los zombies antes de que escapen<br>
-    💀 Pierdes vidas si no los eliminas<br>
-    ⚡ El juego se vuelve más difícil
-    </p>
-
-    <!-- HUD -->
     <div class="d-flex justify-content-center gap-4 flex-wrap mt-3">
         <h5>🎯 Score: <span id="score">0</span></h5>
-        <h5>🏆 High Score: <span id="highScore">0</span></h5>
         <h5>⚡ Nivel: <span id="nivel">1</span></h5>
-        <h5>❤️ Vidas: <span id="vidas">5</span></h5>
     </div>
 
-    <!-- BOTONES -->
-    <div class="mt-3">
-        <button class="btn btn-success" onclick="iniciarJuego()">▶ Iniciar</button>
-        <button class="btn btn-warning" onclick="pausar()">⏸ Pausa</button>
-        <button class="btn btn-info" onclick="toggleMusica()">🎵 Música</button>
-    </div>
-
-    <!-- CANVAS -->
     <canvas id="canvas" width="900" height="500"></canvas>
 
 </div>
