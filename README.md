@@ -40,6 +40,8 @@ La interfaz presenta un diseño moderno con Bootstrap, además de un fondo gráf
 
 ## Estructura del Proyecto
 
+---
+
 mi-juego/
 │
 ├── index.html # Archivo principal
@@ -58,7 +60,6 @@ mi-juego/
 ├── cursor.png # Cursor personalizado
 ├── explosion.png # Efecto visual
 └── favicon.ico # Icono del sitio
-
 
 ---
 
