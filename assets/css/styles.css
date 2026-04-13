@@ -2,39 +2,26 @@ body {
     background: radial-gradient(circle, #0a0a0a, #000);
     color: white;
     font-family: 'Orbitron', sans-serif;
-    overflow: hidden;
-}
-
-.navbar {
-    box-shadow: 0 0 10px #00ffcc;
-}
-
-h2 {
-    color: #00ffcc;
-    text-shadow: 0 0 10px #00ffcc;
-}
-
-h5 {
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid #00ffcc;
-    padding: 8px 15px;
-    border-radius: 20px;
-    box-shadow: 0 0 10px #00ffcc;
 }
 
 canvas {
     border: 4px solid #00ffcc;
     margin-top: 20px;
-    cursor: url("../img/cursor.png") 16 16, auto;
     box-shadow: 0 0 25px #00ffcc;
     border-radius: 10px;
 }
 
+/* HUD */
+h5 {
+    background: rgba(0,0,0,0.7);
+    border: 1px solid #00ffcc;
+    padding: 8px 15px;
+    border-radius: 20px;
+}
+
 /* MENU */
 .menu {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: fixed;
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.95);
@@ -47,17 +34,9 @@ canvas {
 
 .menu h1 {
     color: #00ffcc;
-    margin-bottom: 20px;
-    text-shadow: 0 0 15px #00ffcc;
+    margin-bottom: 10px;
 }
 
 .menu button {
-    padding: 10px 30px;
-    font-size: 20px;
-}
-
-footer {
-    background: #000;
-    color: #00ffcc;
-    box-shadow: 0 0 10px #00ffcc;
+    margin-top: 20px;
 }

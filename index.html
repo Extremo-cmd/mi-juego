@@ -8,8 +8,6 @@
 <link rel="icon" href="assets/img/favicon.ico">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- FUENTE GAMER -->
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
@@ -18,12 +16,14 @@
 <!-- MENU -->
 <div id="menu" class="menu">
     <h1>🧟 Zombie Shooter</h1>
-    <button class="btn btn-success" onclick="startGame()">JUGAR</button>
+    <p>Elimina zombies antes de que lleguen al centro</p>
+    <button class="btn btn-success" onclick="startGame()">▶ JUGAR</button>
 </div>
 
 <nav class="navbar navbar-dark bg-dark">
   <div class="container-fluid">
     <span class="navbar-brand">🧟 Zombie Shooter</span>
+    <button class="btn btn-warning" onclick="pausar()">⏸ Pausa</button>
   </div>
 </nav>
 
@@ -31,9 +31,11 @@
 
     <h2>Zombie Shooter</h2>
 
+    <!-- HUD -->
     <div class="d-flex justify-content-center gap-4 flex-wrap mt-3">
         <h5>🎯 Score: <span id="score">0</span></h5>
         <h5>⚡ Nivel: <span id="nivel">1</span></h5>
+        <h5>❤️ Vida: <span id="vida">100</span></h5>
     </div>
 
     <canvas id="canvas" width="900" height="500"></canvas>
