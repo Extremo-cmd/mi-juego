@@ -12,7 +12,7 @@
 https://github.com/Extremo-cmd/mi-juego  
 
 **Sitio Web (GitHub Pages):**  
-https://extremo-cmd.github.io/mi-ejuego/  
+https://extremo-cmd.github.io/mi-juego/  
 
 ---
 
