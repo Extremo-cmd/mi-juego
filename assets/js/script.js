@@ -33,26 +33,23 @@ musica.loop = true;
 musica.volume = 0.2;
 
 // FUNCIONES
-function reproducirSonido(audio) {
+function reproducir(audio) {
     audio.currentTime = 0;
-    audio.play().catch(() => {});
+    audio.play().catch(()=>{});
 }
 
 function iniciarJuego() {
     jugando = true;
-    musica.play().catch(() => {});
+    musica.play().catch(()=>{});
 }
 
 function pausar() {
     jugando = !jugando;
-
-    if (jugando) musica.play();
-    else musica.pause();
+    jugando ? musica.play() : musica.pause();
 }
 
 function toggleMusica() {
-    if (musica.paused) musica.play();
-    else musica.pause();
+    musica.paused ? musica.play() : musica.pause();
 }
 
 // CREAR ZOMBIE
@@ -66,7 +63,7 @@ function crearZombie() {
         vida: 120
     });
 
-    reproducirSonido(zombieSound);
+    reproducir(zombieSound);
 }
 
 // UPDATE
@@ -74,7 +71,8 @@ function update() {
 
     ctx.drawImage(fondo, 0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "rgba(0,0,0,0.4)";
+    // EFECTO OSCURO
+    ctx.fillStyle = "rgba(0,0,0,0.3)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     if (!jugando) {
@@ -98,7 +96,6 @@ function update() {
     explosiones.forEach((ex, i) => {
         ctx.drawImage(explosionImg, ex.x, ex.y, ex.size, ex.size);
         ex.tiempo--;
-
         if (ex.tiempo <= 0) explosiones.splice(i, 1);
     });
 
@@ -108,7 +105,7 @@ function update() {
 
     if (vidas <= 0) {
         musica.pause();
-        reproducirSonido(gameOverSound);
+        reproducir(gameOverSound);
         alert("💀 GAME OVER");
         location.reload();
     }
@@ -121,15 +118,17 @@ canvas.addEventListener("click", (e) => {
 
     if (!jugando) return;
 
-    reproducirSonido(disparo);
+    reproducir(disparo);
 
     const rect = canvas.getBoundingClientRect();
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
 
+    // FLASH
     ctx.fillStyle = "rgba(255,255,255,0.2)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+    // MIRA
     ctx.beginPath();
     ctx.arc(mx, my, 20, 0, Math.PI * 2);
     ctx.strokeStyle = "yellow";
@@ -153,7 +152,7 @@ canvas.addEventListener("click", (e) => {
             zombies.splice(i, 1);
             score += 10;
 
-             if (score > highScore) {
+            if (score > highScore) {
                 highScore = score;
                 localStorage.setItem("highScore", highScore);
                 document.getElementById("highScore").textContent = highScore;
@@ -173,5 +172,3 @@ setInterval(() => {
 }, 5000);
 
 update();
-
-// 
